@@ -89,7 +89,7 @@ export class AuthService {
     return this.tokenService.refreshTokens(refreshToken);
   }
 
-  logout(userId: string, accessToken: string): Promise<void> {
+  logout(userId: number, accessToken: string): Promise<void> {
     return this.tokenService.logout(userId, accessToken);
   }
 }

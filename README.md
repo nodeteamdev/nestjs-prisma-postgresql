@@ -1,5 +1,5 @@
 # General
-This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma ODM.
+This is starter of a Nest.js 10 application with PostgreSQL + Prisma ORM.
 
 # Features
 - JWT Authentication
@@ -12,7 +12,7 @@ This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma 
 - Validation Pipes
 - Swagger Documentation
 - Docker Compose
-- MongoDB Replica Set
+- PostgreSQL
 - Serializers
 - Health Check
 
@@ -26,45 +26,16 @@ This is starter of a Nest.js 10 application with a MongoDB replica set + Prisma 
 - Nest.js 10
 - Docker
 - Docker Compose
-- MongoDB
+- PostgreSQL
 - Node.js
 - NPM
 
 # Development
 
-## MongoDB Replica Set
-1. Create volume for each MongoDB node
-```bash
-docker volume create --name mongodb_repl_data1 -d local
-docker volume create --name mongodb_repl_data2 -d local
-docker volume create --name mongodb_repl_data3 -d local
-```
-
-2. Start the Docker containers using docker-compose
+## PostgreSQL Set
+Start the Docker containers using docker-compose
 ```bash
 docker-compose up -d
-```
-
-3. Start an interactive MongoDb shell session on the primary node
-```bash
-docker exec -it mongo0 mongo --port 30000
-
-# in the shell
-config={"_id":"rs0","members":[{"_id":0,"host":"mongo0:30000"},{"_id":1,"host":"mongo1:30001"},{"_id":2,"host":"mongo2:30002"}]}
-rs.initiate(config);
-```
-
-4 Update hosts file
-```bash
-sudo nano  /etc/hosts
-
-# write in the file
-127.0.0.1 mongo0 mongo1 mongo2
-```
-
-5. Connect to MongoDB and check the status of the replica set
-```
-mongo "mongodb://localhost:30000,localhost:30001,localhost:30002/?replicaSet=rs0"
 ```
 
 ## Migration
@@ -92,7 +63,7 @@ npm install
 npm run db:generate
 ```
 
-3. Push MongoDB Schema 
+3. Push Prisma Schema 
 
 ```
 npm run db:push

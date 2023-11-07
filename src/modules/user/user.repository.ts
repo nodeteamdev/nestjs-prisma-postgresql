@@ -21,7 +21,7 @@ export class UserRepository {
     });
   }
 
-  findById(id: string): Promise<User> {
+  findById(id: number): Promise<User> {
     return this.prisma.user.findUnique({
       where: { id },
     });

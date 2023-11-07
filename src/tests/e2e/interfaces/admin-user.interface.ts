@@ -1,5 +1,5 @@
 export interface AdminUserInterface {
-  id: string;
+  id: number;
   email: string | null;
   phone: string | null;
   password: string | null;

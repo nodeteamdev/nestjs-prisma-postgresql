@@ -31,7 +31,7 @@ export function createUsers(length: number): User[] {
   const result: User[] = [];
   for (let i = 0; i < length; i++) {
     const user: User = {
-      id: faker.string.alphanumeric({ length: 12 }),
+      id: faker.number.int(),
       ...getSignUpData(),
       phone: null,
       roles: ['customer'],

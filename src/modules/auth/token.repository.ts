@@ -19,7 +19,7 @@ export class TokenRepository {
   }
 
   getUserAccessTokenFromWhitelist(
-    userId: string,
+    userId: number,
     accessToken: string,
   ): Promise<TokenWhiteList> {
     return this.prisma.tokenWhiteList.findFirst({
@@ -31,7 +31,7 @@ export class TokenRepository {
   }
 
   deleteAccessTokenFromWhitelist(
-    accessTokenId: string,
+    accessTokenId: number,
   ): Promise<TokenWhiteList> {
     return this.prisma.tokenWhiteList.delete({
       where: {
@@ -41,7 +41,7 @@ export class TokenRepository {
   }
 
   deleteRefreshTokenFromWhitelist(
-    refreshTokenId: string,
+    refreshTokenId: number,
   ): Promise<TokenWhiteList> {
     return this.prisma.tokenWhiteList.delete({
       where: {
@@ -59,8 +59,8 @@ export class TokenRepository {
   }
 
   saveAccessTokenToWhitelist(
-    userId: string,
-    refreshTokenId: string,
+    userId: number,
+    refreshTokenId: number,
     accessToken: string,
   ): Promise<TokenWhiteList> {
     const jwtConfig = this.configService.get('jwt');
@@ -68,7 +68,7 @@ export class TokenRepository {
 
     return this.prisma.tokenWhiteList.create({
       data: {
-        userId: userId,
+        userId,
         refreshTokenId,
         accessToken,
         refreshToken: null,
@@ -78,7 +78,7 @@ export class TokenRepository {
   }
 
   saveRefreshTokenToWhitelist(
-    userId: string,
+    userId: number,
     refreshToken: string,
   ): Promise<TokenWhiteList> {
     const jwtConfig = this.configService.get('jwt');
@@ -86,7 +86,7 @@ export class TokenRepository {
 
     return this.prisma.tokenWhiteList.create({
       data: {
-        userId: userId,
+        userId,
         accessToken: null,
         refreshTokenId: null,
         refreshToken,

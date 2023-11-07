@@ -92,7 +92,7 @@ export class TokenService {
     };
   }
 
-  async logout(userId: string, accessToken: string): Promise<void> {
+  async logout(userId: number, accessToken: string): Promise<void> {
     const _accessToken =
       await this.tokenRepository.getUserAccessTokenFromWhitelist(
         userId,

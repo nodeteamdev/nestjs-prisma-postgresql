@@ -3,31 +3,33 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  email     String   @unique
-  phone     String?
-  firstName String?
-  lastName  String?
-  password  String
-  roles     Roles[]  @default([customer])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  phone          String?
+  firstName      String?
+  lastName       String?
+  password       String
+  roles          Roles[]          @default([customer])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+  tokenWhiteList TokenWhiteList[]
 }
 
 model TokenWhiteList {
-  id           String   @id @default(auto()) @map("_id") @db.ObjectId
-  userId       String
-  accessToken  String?
-  refreshToken String?
-  refreshTokenId String?
-  expiredAt    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
+  id             Int      @id @default(autoincrement())
+  userId         Int
+  accessToken    String?
+  refreshToken   String?
+  expiredAt      DateTime
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
+  refreshTokenId Int?
+  user           User     @relation(fields: [userId], references: [id])
 }
 
 enum Roles {

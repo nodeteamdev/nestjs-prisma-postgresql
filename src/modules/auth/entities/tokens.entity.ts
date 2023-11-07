@@ -1,15 +1,15 @@
 import { TokenWhiteList } from '@prisma/client';
 
 export class TokensEntity implements TokenWhiteList {
-  readonly id: string;
+  readonly id: number;
 
-  readonly userId: string;
+  readonly userId: number;
 
   readonly accessToken: string | null;
 
   readonly refreshToken: string | null;
 
-  readonly refreshTokenId: string | null;
+  readonly refreshTokenId: number | null;
 
   readonly expiredAt: Date;
 

@@ -7,7 +7,7 @@ import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findById(id: string): Promise<User> {
+  async findById(id: number): Promise<User> {
     return this.userRepository.findById(id);
   }
 
@@ -16,7 +16,7 @@ export class UserService {
    * @param id
    * @returns Promise<User>
    */
-  findOne(id: string): Promise<User> {
+  findOne(id: number): Promise<User> {
     return this.userRepository.findOne({
       where: { id },
     });

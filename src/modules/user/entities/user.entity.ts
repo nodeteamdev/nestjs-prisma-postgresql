@@ -2,7 +2,7 @@ import { User } from '@prisma/client';
 import { Roles } from '@modules/app/app.roles';
 
 export default class UserEntity implements User {
-  readonly id!: string;
+  readonly id!: number;
 
   readonly phone!: string | null;
 
