@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { TokenWhiteList } from '@prisma/client';
+import { TokenWhiteList, User } from '@prisma/client';
 
 @Injectable()
 export class TokenService {
@@ -51,7 +51,7 @@ export class TokenService {
 
   async refreshTokens(
     refreshToken: string,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<Auth.AccessRefreshTokens | never> {
     const token = await this.tokenRepository.getRefreshTokenFromWhitelist(
       refreshToken,
     );
@@ -92,7 +92,7 @@ export class TokenService {
     };
   }
 
-  async logout(userId: number, accessToken: string): Promise<void> {
+  async logout(userId: number, accessToken: string): Promise<Pick<User, 'id'>> {
     const _accessToken =
       await this.tokenRepository.getUserAccessTokenFromWhitelist(
         userId,
@@ -106,7 +106,9 @@ export class TokenService {
       ),
     ]);
 
-    return;
+    return {
+      id: userId,
+    };
   }
 
   async isPasswordCorrect(

@@ -44,7 +44,7 @@ export class AuthController {
   @Post('token/refresh')
   refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<Auth.AccessRefreshTokens | never> {
     return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 

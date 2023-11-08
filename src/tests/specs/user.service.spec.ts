@@ -76,7 +76,7 @@ describe('UserService', () => {
       });
 
       it('should return null', async () => {
-        const id = faker.string.alphanumeric();
+        const id = faker.number.int();
         expect(await userService.findById(id)).toBe(null);
       });
     });
@@ -104,7 +104,7 @@ describe('UserService', () => {
       });
 
       it('should return null', async () => {
-        const id = faker.string.alphanumeric();
+        const id = faker.number.int();
         expect(await userService.findOne(id)).toBe(null);
       });
     });

@@ -85,11 +85,11 @@ export class AuthService {
 
   refreshTokens(
     refreshToken: string,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<Auth.AccessRefreshTokens | never> {
     return this.tokenService.refreshTokens(refreshToken);
   }
 
-  logout(userId: number, accessToken: string): Promise<void> {
+  logout(userId: number, accessToken: string): Promise<Pick<User, 'id'>> {
     return this.tokenService.logout(userId, accessToken);
   }
 }
