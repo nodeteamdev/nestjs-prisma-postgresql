@@ -92,12 +92,9 @@ export class TokenService {
     };
   }
 
-  async logout(userId: string, accessToken: string): Promise<void> {
+  async logout(accessToken: string): Promise<void> {
     const _accessToken =
-      await this.tokenRepository.getUserAccessTokenFromWhitelist(
-        userId,
-        accessToken,
-      );
+      await this.tokenRepository.getUserAccessTokenFromWhitelist(accessToken);
 
     await Promise.all([
       this.tokenRepository.deleteAccessTokenFromWhitelist(_accessToken.id),

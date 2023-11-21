@@ -28,10 +28,9 @@ export class TokenRepository {
   }
 
   async getUserAccessTokenFromWhitelist(
-    userId: string,
     accessToken: string,
   ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(`${userId}:${accessToken}`);
+    const key = this.getKey(accessToken);
     const cachedData = await this.redis.get(key);
 
     return cachedData ? JSON.parse(cachedData) : null;

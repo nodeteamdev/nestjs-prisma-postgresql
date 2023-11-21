@@ -55,8 +55,8 @@ export class AuthController {
   @UseAbility(Actions.delete, TokensEntity)
   async logout(@CaslUser() userProxy?: UserProxy<User>) {
     const { accessToken } = await userProxy.getMeta();
-    const { id: userId } = await userProxy.get();
+    // const { id: userId } = await userProxy.get(); TODO: Remove if not necessary
 
-    return this.authService.logout(userId, accessToken);
+    return this.authService.logout(accessToken);
   }
 }
