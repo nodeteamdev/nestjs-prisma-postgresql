@@ -19,17 +19,6 @@ model User {
   updatedAt DateTime @default(now())
 }
 
-model TokenWhiteList {
-  id           String   @id @default(uuid())
-  userId       String
-  accessToken  String?
-  refreshToken String?
-  refreshTokenId String?
-  expiredAt    DateTime
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
-}
-
 enum Roles {
   admin
   customer
