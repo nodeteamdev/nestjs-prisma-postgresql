@@ -45,12 +45,10 @@ class BaseContext {
   }
 
   async end() {
-    const deleteUsers = this._connection.user.deleteMany();
-    const deleteTokens = this._connection.tokenWhiteList.deleteMany();
-
-    await this._connection.$transaction([deleteUsers, deleteTokens]);
-
-    await this._app.close();
+    // const deleteUsers = this._connection.user.deleteMany();
+    // const deleteTokens = this._connection.tokenWhiteList.deleteMany(); //TODO:
+    // await this._connection.$transaction([deleteUsers, deleteTokens]);
+    // await this._app.close();
   }
 }
 
