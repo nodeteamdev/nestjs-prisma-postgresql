@@ -6,9 +6,10 @@ import { TokenService } from '@modules/auth/token.service';
 import { TokenRepository } from '@modules/auth/token.repository';
 import { CaslModule } from '@modules/casl';
 import { permissions } from '@modules/auth/auth.permissions';
+import { RedisModule } from '@providers/redis';
 
 @Module({
-  imports: [CaslModule.forFeature({ permissions })],
+  imports: [CaslModule.forFeature({ permissions }), RedisModule],
   controllers: [AuthController],
   providers: [AuthService, TokenService, UserRepository, TokenRepository],
 })

@@ -1,97 +1,121 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '@providers/prisma';
 import { ConfigService } from '@nestjs/config';
-import { TokenWhiteList } from '.prisma/client';
+import { RedisService } from '@providers/redis';
+import { TokenWhiteList } from './types/tokens-white-list.type';
 
 @Injectable()
 export class TokenRepository {
+  private readonly tokenPrefix: string;
+
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly redis: RedisService,
     private readonly configService: ConfigService,
-  ) {}
-
-  getAccessTokenFromWhitelist(accessToken: string): Promise<TokenWhiteList> {
-    return this.prisma.tokenWhiteList.findFirst({
-      where: {
-        accessToken,
-      },
-    });
+  ) {
+    this.tokenPrefix = 'jwt-token:';
   }
 
-  getUserAccessTokenFromWhitelist(
+  private getKey(tokenId: string): string {
+    return `${this.tokenPrefix}${tokenId}`;
+  }
+
+  async getAccessTokenFromWhitelist(
+    accessToken: string,
+  ): Promise<TokenWhiteList | null> {
+    const key = this.getKey(accessToken);
+    const cachedData = await this.redis.get(key);
+
+    return cachedData ? JSON.parse(cachedData) : null;
+  }
+
+  async getUserAccessTokenFromWhitelist(
     userId: string,
     accessToken: string,
-  ): Promise<TokenWhiteList> {
-    return this.prisma.tokenWhiteList.findFirst({
-      where: {
-        userId,
-        accessToken,
-      },
-    });
+  ): Promise<TokenWhiteList | null> {
+    const key = this.getKey(`${userId}:${accessToken}`);
+    const cachedData = await this.redis.get(key);
+
+    return cachedData ? JSON.parse(cachedData) : null;
   }
 
-  deleteAccessTokenFromWhitelist(
+  async deleteAccessTokenFromWhitelist(
     accessTokenId: string,
-  ): Promise<TokenWhiteList> {
-    return this.prisma.tokenWhiteList.delete({
-      where: {
-        id: accessTokenId,
-      },
-    });
+  ): Promise<boolean> {
+    const key = this.getKey(accessTokenId);
+    return this.redis.delete(key);
   }
 
-  deleteRefreshTokenFromWhitelist(
+  async deleteRefreshTokenFromWhitelist(
     refreshTokenId: string,
-  ): Promise<TokenWhiteList> {
-    return this.prisma.tokenWhiteList.delete({
-      where: {
-        id: refreshTokenId,
-      },
-    });
+  ): Promise<boolean> {
+    const key = this.getKey(refreshTokenId);
+    return this.redis.delete(key);
   }
 
-  getRefreshTokenFromWhitelist(refreshToken: string): Promise<TokenWhiteList> {
-    return this.prisma.tokenWhiteList.findFirst({
-      where: {
-        refreshToken,
-      },
-    });
+  async getRefreshTokenFromWhitelist(
+    refreshToken: string,
+  ): Promise<TokenWhiteList | null> {
+    const key = this.getKey(refreshToken);
+    const cachedData = await this.redis.get(key);
+
+    return cachedData ? JSON.parse(cachedData) : null;
   }
 
-  saveAccessTokenToWhitelist(
+  async saveAccessTokenToWhitelist(
     userId: string,
     refreshTokenId: string,
     accessToken: string,
-  ): Promise<TokenWhiteList> {
+  ): Promise<TokenWhiteList | null> {
+    const key = this.getKey(accessToken);
+
     const jwtConfig = this.configService.get('jwt');
     const expiredAt = new Date(Date.now() + jwtConfig.jwtExpAccessToken);
 
-    return this.prisma.tokenWhiteList.create({
-      data: {
-        userId: userId,
-        refreshTokenId,
-        accessToken,
-        refreshToken: null,
-        expiredAt,
-      },
-    });
+    const value: TokenWhiteList = {
+      userId,
+      refreshTokenId,
+      accessToken,
+      refreshToken: null,
+      expiredAt,
+      id: '',
+      createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
+    };
+
+    const success = await this.redis.save(
+      key,
+      JSON.stringify(value),
+      jwtConfig.jwtExpAccessToken,
+    );
+
+    return success ? value : null;
   }
 
-  saveRefreshTokenToWhitelist(
+  async saveRefreshTokenToWhitelist(
     userId: string,
     refreshToken: string,
-  ): Promise<TokenWhiteList> {
+  ): Promise<TokenWhiteList | null> {
+    const key = this.getKey(refreshToken);
+
     const jwtConfig = this.configService.get('jwt');
     const expiredAt = new Date(Date.now() + jwtConfig.jwtExpRefreshToken);
 
-    return this.prisma.tokenWhiteList.create({
-      data: {
-        userId: userId,
-        accessToken: null,
-        refreshTokenId: null,
-        refreshToken,
-        expiredAt,
-      },
-    });
+    const value: TokenWhiteList = {
+      userId,
+      accessToken: null,
+      refreshTokenId: null,
+      refreshToken,
+      expiredAt,
+      id: '',
+      createdAt: new Date(Date.now()),
+      updatedAt: new Date(Date.now()),
+    };
+
+    const success = await this.redis.save(
+      key,
+      JSON.stringify(value),
+      jwtConfig.jwtExpRefreshToken,
+    );
+
+    return success ? value : null;
   }
 }

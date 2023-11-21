@@ -1,4 +1,4 @@
-import { TokenWhiteList } from '@prisma/client';
+import { TokenWhiteList } from '../types/tokens-white-list.type';
 
 export class TokensEntity implements TokenWhiteList {
   readonly id: string;

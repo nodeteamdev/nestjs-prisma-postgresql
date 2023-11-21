@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { TokenWhiteList } from '@prisma/client';
+import { TokenWhiteList } from './types/tokens-white-list.type';
 
 @Injectable()
 export class TokenService {

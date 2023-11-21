@@ -17,13 +17,22 @@ import s3Config from '@config/s3.config';
 import sqsConfig from '@config/sqs.config';
 import { TokenService } from '@modules/auth/token.service';
 import { TokenRepository } from '@modules/auth/token.repository';
+import { RedisModule } from '@providers/redis';
+import redisConfig from '@config/redis.config';
 
 @Module({
   controllers: [],
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [appConfig, swaggerConfig, jwtConfig, s3Config, sqsConfig],
+      load: [
+        appConfig,
+        swaggerConfig,
+        jwtConfig,
+        s3Config,
+        sqsConfig,
+        redisConfig,
+      ],
     }),
     PrismaModule.forRoot({
       isGlobal: true,
@@ -31,6 +40,7 @@ import { TokenRepository } from '@modules/auth/token.repository';
         middlewares: [loggingMiddleware(), createUserMiddleware()],
       },
     }),
+    RedisModule,
     JwtModule.register({
       global: true,
     }),
