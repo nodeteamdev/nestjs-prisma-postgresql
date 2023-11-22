@@ -120,7 +120,7 @@ export default class SqsModule {
     if (options.useExisting || options.useFactory) {
       return [this.createAsyncOptionsProvider(options)];
     }
-    const useClass = options.useClass as Type<SqsModuleOptionsFactory>;
+    const useClass = options.useClass;
 
     return [
       this.createAsyncOptionsProvider(options),
@@ -142,10 +142,7 @@ export default class SqsModule {
       };
     }
 
-    const inject = [
-      (options.useClass ||
-        options.useExisting) as Type<SqsModuleOptionsFactory>,
-    ];
+    const inject = [options.useClass || options.useExisting];
 
     return {
       provide: SQS_OPTIONS,
