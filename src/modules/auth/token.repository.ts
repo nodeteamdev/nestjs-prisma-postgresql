@@ -27,15 +27,6 @@ export class TokenRepository {
     return cachedData ? JSON.parse(cachedData) : null;
   }
 
-  async getUserAccessTokenFromWhitelist(
-    accessToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(accessToken);
-    const cachedData = await this.redis.get(key);
-
-    return cachedData ? JSON.parse(cachedData) : null;
-  }
-
   async deleteAccessTokenFromWhitelist(accessToken: string): Promise<boolean> {
     const key = this.getKey(accessToken);
     return this.redis.delete(key);
