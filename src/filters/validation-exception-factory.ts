@@ -8,7 +8,7 @@ export interface TransformedErrors {
 function transformErrors(errors: ValidationError[]): TransformedErrors[] {
   return errors.reduce((acc: TransformedErrors[], error: ValidationError) => {
     if (error.children?.length && error.children.length !== 0) {
-      const childrenErrors = error.children as ValidationError[];
+      const childrenErrors = error.children;
 
       return [...acc, ...transformErrors(childrenErrors)];
     }
