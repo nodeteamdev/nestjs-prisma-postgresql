@@ -1,6 +1,5 @@
 import DefaultContext from '@tests/e2e/context/default-context';
 import { User } from '@prisma/client';
-import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { AUTH_TOKEN_REFRESH } from '@tests/e2e/common/routes';
 import { faker } from '@faker-js/faker';
 
