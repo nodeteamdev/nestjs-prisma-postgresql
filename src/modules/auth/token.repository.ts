@@ -36,17 +36,15 @@ export class TokenRepository {
     return cachedData ? JSON.parse(cachedData) : null;
   }
 
-  async deleteAccessTokenFromWhitelist(
-    accessTokenId: string,
-  ): Promise<boolean> {
-    const key = this.getKey(accessTokenId);
+  async deleteAccessTokenFromWhitelist(accessToken: string): Promise<boolean> {
+    const key = this.getKey(accessToken); //TODO: access token, not id
     return this.redis.delete(key);
   }
 
   async deleteRefreshTokenFromWhitelist(
-    refreshTokenId: string,
+    refreshToken: string,
   ): Promise<boolean> {
-    const key = this.getKey(refreshTokenId);
+    const key = this.getKey(refreshToken); //TODO: refresh token, not id
     return this.redis.delete(key);
   }
 

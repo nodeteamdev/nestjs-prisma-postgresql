@@ -97,9 +97,11 @@ export class TokenService {
       await this.tokenRepository.getUserAccessTokenFromWhitelist(accessToken);
 
     await Promise.all([
-      this.tokenRepository.deleteAccessTokenFromWhitelist(_accessToken.id),
+      this.tokenRepository.deleteAccessTokenFromWhitelist(
+        _accessToken.accessToken,
+      ),
       this.tokenRepository.deleteRefreshTokenFromWhitelist(
-        _accessToken.refreshTokenId,
+        _accessToken.refreshToken,
       ),
     ]);
 
