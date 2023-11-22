@@ -21,8 +21,6 @@
     "test:config:e2e": "jest --config jest-e2e.json --runInBand",
     "db:generate": "prisma generate",
     "db:push": "npx prisma db push",
-    "db:migrate:up": "npx migrate-mongo up",
-    "db:migrate:down": "npx migrate-mongo down",
     "prepare": "husky install"
   },
   "keywords": [
