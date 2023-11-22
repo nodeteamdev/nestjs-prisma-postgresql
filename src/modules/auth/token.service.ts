@@ -105,8 +105,6 @@ export class TokenService {
         _accessToken.refreshToken,
       ),
     ]);
-
-    return;
   }
 
   async isPasswordCorrect(
