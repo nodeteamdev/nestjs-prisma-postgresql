@@ -48,6 +48,3 @@ export class CustomMessage {
     return this;
   }
 }
-
-
-new CustomMessage()
