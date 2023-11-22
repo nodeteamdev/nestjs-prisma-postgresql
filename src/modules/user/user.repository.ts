@@ -1,7 +1,6 @@
 import { PrismaService } from '@providers/prisma';
 import { Injectable } from '@nestjs/common';
-import { paginator } from '@nodeteam/nestjs-prisma-pagination';
-import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
+import { paginator, PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import { Prisma, User } from '@prisma/client';
 
 @Injectable()

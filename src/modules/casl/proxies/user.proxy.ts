@@ -1,5 +1,8 @@
-import { AuthorizableRequest } from '@modules/casl';
-import { AuthorizableUser, AuthorizableUserMeta } from '@modules/casl';
+import {
+  AuthorizableRequest,
+  AuthorizableUser,
+  AuthorizableUserMeta,
+} from '@modules/casl';
 import { RequestProxy } from './request.proxy';
 
 export class UserProxy<
