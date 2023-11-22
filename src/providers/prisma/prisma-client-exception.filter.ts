@@ -69,7 +69,7 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     exception:
       | Prisma.PrismaClientKnownRequestError
       | Prisma.NotFoundError
-      | unknown,
+      | any,
     host: ArgumentsHost,
   ) {
     if (exception instanceof Prisma.PrismaClientKnownRequestError) {
