@@ -4,7 +4,7 @@ import { PrismaClient, User } from '@prisma/client';
 import { INestApplication } from '@nestjs/common';
 import { AdminUserInterface } from '@tests/e2e/interfaces/admin-user.interface';
 import { Roles } from '@modules/app/app.roles';
-import { createUsers, getSignUpData } from '@tests/common/user.mock.functions';
+import { getSignUpData } from '@tests/common/user.mock.functions';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
 

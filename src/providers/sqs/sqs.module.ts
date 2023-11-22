@@ -1,4 +1,4 @@
-import { DynamicModule, Global, Module, Provider, Type } from '@nestjs/common';
+import { DynamicModule, Global, Module, Provider } from '@nestjs/common';
 import { DiscoveryModule, DiscoveryService } from '@nestjs-plus/discovery';
 import SqsService from './sqs.service';
 import {
