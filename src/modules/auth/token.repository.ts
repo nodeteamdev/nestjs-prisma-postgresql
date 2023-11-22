@@ -37,14 +37,14 @@ export class TokenRepository {
   }
 
   async deleteAccessTokenFromWhitelist(accessToken: string): Promise<boolean> {
-    const key = this.getKey(accessToken); //TODO: access token, not id
+    const key = this.getKey(accessToken);
     return this.redis.delete(key);
   }
 
   async deleteRefreshTokenFromWhitelist(
     refreshToken: string,
   ): Promise<boolean> {
-    const key = this.getKey(refreshToken); //TODO: refresh token, not id
+    const key = this.getKey(refreshToken);
     return this.redis.delete(key);
   }
 
