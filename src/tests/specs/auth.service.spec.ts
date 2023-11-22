@@ -32,6 +32,8 @@ import sqsConfig from '@config/sqs.config';
 import { createUsers, getSignUpData } from '@tests/common/user.mock.functions';
 import mockTokenService from '@tests/mocks/token.service.mock';
 import mockUserRepository from '@tests/mocks/user.repository.mock';
+import { RedisService } from '@providers/redis';
+import redisConfig from '@config/redis.config';
 describe('AuthService', () => {
   let module: TestingModule;
 
@@ -46,7 +48,14 @@ describe('AuthService', () => {
         CaslModule.forFeature({ permissions }),
         JwtModule.register({}),
         ConfigModule.forRoot({
-          load: [appConfig, swaggerConfig, jwtConfig, s3Config, sqsConfig],
+          load: [
+            appConfig,
+            swaggerConfig,
+            jwtConfig,
+            s3Config,
+            sqsConfig,
+            redisConfig,
+          ],
         }),
       ],
       controllers: [AuthController],
@@ -58,6 +67,7 @@ describe('AuthService', () => {
         JwtService,
         ConfigService,
         PrismaService,
+        RedisService,
       ],
     }).compile();
 
@@ -235,7 +245,7 @@ describe('AuthService', () => {
       it('should remove tokens from white list', async () => {
         const userId = faker.string.alphanumeric({ length: 12 });
         const accessToken = faker.string.alphanumeric({ length: 40 });
-        expect(await authService.logout(userId, accessToken)).toBe(null);
+        expect(await authService.logout(accessToken)).toBe(null);
       });
     });
   });
