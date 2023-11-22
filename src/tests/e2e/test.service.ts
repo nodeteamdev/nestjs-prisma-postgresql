@@ -24,8 +24,6 @@ class TestService {
   }
 
   async createGlobalAdmin(): Promise<AdminUserInterface> {
-    const role: Roles.admin[] = [Roles.admin];
-
     const signUpData: SignUpDto = getSignUpData();
     const userPassword: string = signUpData.password;
 
@@ -40,7 +38,7 @@ class TestService {
       },
     });
 
-    const { id, phone, email, password } = newAdmin;
+    const { id, phone, email } = newAdmin;
 
     const { accessToken, refreshToken } = await this._authService.signIn({
       email,

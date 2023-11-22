@@ -242,7 +242,6 @@ describe('AuthService', () => {
       });
 
       it('should remove tokens from white list', async () => {
-        const userId = faker.string.alphanumeric({ length: 12 });
         const accessToken = faker.string.alphanumeric({ length: 40 });
         expect(await authService.logout(accessToken)).toBe(null);
       });
