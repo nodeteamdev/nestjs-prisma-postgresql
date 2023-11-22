@@ -51,7 +51,7 @@ class BaseContext {
     const deleteUsers = this._connection.user.deleteMany();
     await this._connection.$transaction([deleteUsers]);
 
-    this._redis.deleteAll(); //TODO:
+    this._redis.deleteAll();
 
     await this._app.close();
   }
