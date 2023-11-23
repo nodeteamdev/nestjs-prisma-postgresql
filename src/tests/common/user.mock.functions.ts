@@ -40,6 +40,7 @@ export function createUsers(length: number): User[] {
     };
     result.push(user);
   }
+
   return result;
 }
 

@@ -14,6 +14,7 @@ export class SubjectProxy<Subject = Casl.AnyObject> {
     }
 
     req.setSubject(await req.getSubjectHook().run(this.request));
+
     return req.getSubject();
   }
 

@@ -54,6 +54,7 @@ export class CaslModule {
     Request = AuthorizableRequest<User>,
   >(options: OptionsForRoot<Roles, User, Request>): DynamicModule {
     Reflect.defineMetadata(CASL_ROOT_OPTIONS, options, CaslConfig);
+
     return {
       module: CaslModule,
     };

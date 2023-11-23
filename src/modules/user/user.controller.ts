@@ -57,6 +57,7 @@ export class UserController {
   @UseAbility(Actions.read, UserEntity)
   async me(@CaslUser() userProxy?: UserProxy<User>): Promise<User> {
     const tokenUser = await userProxy.get();
+
     return this.userService.findOne(tokenUser.id);
   }
 

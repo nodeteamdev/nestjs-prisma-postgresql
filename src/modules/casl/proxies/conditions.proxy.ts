@@ -10,6 +10,7 @@ export type SqlConditions = [string, unknown[], string[]];
 function convertToMongoQuery(rule: AnyMongoAbility['rules'][number]) {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const conditions = rule.conditions;
+
   return rule.inverted ? { $nor: [conditions] } : conditions;
 }
 
@@ -29,6 +30,7 @@ export class ConditionsProxy {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     if (ast === null || !Array.from(ast.value as any).length) return undefined;
     const interpret = createSqlInterpreter(allInterpreters);
+
     return interpret(ast, {
       ...pg,
       joinRelation: this.joinRelation,
@@ -41,6 +43,7 @@ export class ConditionsProxy {
 
   public toMongo(): MongoQuery | undefined {
     if (!this.getRules()) return undefined;
+
     return (
       rulesToQuery(
         this.abilities,

@@ -14,6 +14,7 @@ export default (ctx: DefaultContext) => {
   it('should delete tokens from whitelist', async () => {
     await ctx.request.getAuth(USERS_ME, tokens.accessToken).expect(200);
     await ctx.request.postAuth(AUTH_LOGOUT, tokens.accessToken).expect(204);
+
     return ctx.request.getAuth(USERS_ME, tokens.accessToken).expect(401);
   });
 };
