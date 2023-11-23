@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { SignTokensDto } from './dto/sign-tokens.dto';
+import { TokenCredentialsDto } from './dto/token-credentials.dto';
 
 @Injectable()
 export class TokenService {
@@ -17,7 +17,7 @@ export class TokenService {
     this.jwtConfig = this.configService.get('jwt');
   }
 
-  async sign(payload: SignTokensDto): Promise<Auth.AccessRefreshTokens> {
+  async sign(payload: TokenCredentialsDto): Promise<Auth.AccessRefreshTokens> {
     const userId = payload.id;
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
@@ -129,14 +129,14 @@ export class TokenService {
     return bcrypt.compare(dtoPassword, password);
   }
 
-  createJwtAccessToken(payload: Buffer | object): string {
+  createJwtAccessToken(payload: TokenCredentialsDto): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpAccessToken,
       secret: this.jwtConfig.accessToken,
     });
   }
 
-  createJwtRefreshToken(payload: Buffer | object): string {
+  createJwtRefreshToken(payload: TokenCredentialsDto): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpRefreshToken,
       secret: this.jwtConfig.refreshToken,
