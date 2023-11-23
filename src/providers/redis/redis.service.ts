@@ -31,7 +31,7 @@ export class RedisService {
       actions.push(this.redisClient.expire(key, expireInSeconds));
     }
 
-    Promise.all(actions);
+    await Promise.all(actions);
   }
 
   async delete(key: string): Promise<boolean> {
