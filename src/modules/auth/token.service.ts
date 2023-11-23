@@ -70,6 +70,11 @@ export class TokenService {
       userId,
     );
 
+    if (refreshToken !== token) {
+      // check if refresh token from the request is equal to the token from the redis whitelist
+      throw new UnauthorizedException();
+    }
+
     if (!token) {
       // check if token is in the whitelist
       throw new UnauthorizedException();
