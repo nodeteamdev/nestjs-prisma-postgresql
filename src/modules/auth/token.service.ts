@@ -3,37 +3,41 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
+import { SignTokensDto } from './dto/sign-tokens.dto';
 
 @Injectable()
 export class TokenService {
+  jwtConfig;
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
     private readonly tokenRepository: TokenRepository,
-  ) {}
+  ) {
+    this.jwtConfig = this.configService.get('jwt');
+  }
 
-  async sign(payload): Promise<Auth.AccessRefreshTokens> {
+  async sign(payload: SignTokensDto): Promise<Auth.AccessRefreshTokens> {
     const userId = payload.id;
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
 
-    const jwtConfig = this.configService.get('jwt');
-
-    await this.tokenRepository.saveRefreshTokenToWhitelist(
-      userId,
-      _refreshToken,
-      jwtConfig.jwtExpRefreshToken,
-    );
-
-    await this.tokenRepository.saveAccessTokenToWhitelist(
-      userId,
-      _accessToken,
-      jwtConfig.jwtExpAccessToken,
-    );
+    await Promise.all([
+      this.tokenRepository.saveRefreshTokenToWhitelist({
+        userId,
+        refreshToken: _refreshToken,
+        expireInSeconds: this.jwtConfig.jwtExpRefreshToken,
+      }),
+      this.tokenRepository.saveAccessTokenToWhitelist({
+        userId,
+        accessToken: _accessToken,
+        expireInSeconds: this.jwtConfig.jwtExpAccessToken,
+      }),
+    ]);
 
     return {
-      accessToken: _accessToken,
-      refreshToken: _refreshToken,
+      refreshToken: _accessToken,
+      accessToken: _refreshToken,
     };
   }
 
@@ -58,7 +62,7 @@ export class TokenService {
     refreshToken: string,
   ): Promise<Auth.AccessRefreshTokens | void> {
     const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: this.configService.get<string>('jwt.refreshToken'),
+      secret: this.jwtConfig.refreshToken,
     });
 
     const userId = payload.id;
@@ -86,19 +90,18 @@ export class TokenService {
     const _accessToken = this.createJwtAccessToken(_payload);
     const _refreshToken = this.createJwtRefreshToken(_payload);
 
-    const jwtConfig = this.configService.get('jwt');
-
-    await this.tokenRepository.saveRefreshTokenToWhitelist(
-      _payload.id,
-      _refreshToken,
-      jwtConfig.jwtExpRefreshToken,
-    );
-
-    await this.tokenRepository.saveAccessTokenToWhitelist(
-      _payload.id,
-      _accessToken,
-      jwtConfig.jwtExpAccessToken,
-    );
+    await Promise.all([
+      this.tokenRepository.saveRefreshTokenToWhitelist({
+        userId,
+        refreshToken: _refreshToken,
+        expireInSeconds: this.jwtConfig.jwtExpRefreshToken,
+      }),
+      this.tokenRepository.saveAccessTokenToWhitelist({
+        userId,
+        accessToken: _accessToken,
+        expireInSeconds: this.jwtConfig.jwtExpAccessToken,
+      }),
+    ]);
 
     return {
       accessToken: _accessToken,
@@ -108,7 +111,7 @@ export class TokenService {
 
   async logout(accessToken: string): Promise<void> {
     const payload = await this.jwtService.verifyAsync(accessToken, {
-      secret: this.configService.get<string>('jwt.accessToken'),
+      secret: this.jwtConfig.accessToken,
     });
 
     const userId = payload.id;
@@ -128,15 +131,15 @@ export class TokenService {
 
   createJwtAccessToken(payload: Buffer | object): string {
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get<number>('jwt.jwtExpAccessToken'),
-      secret: this.configService.get<string>('jwt.accessToken'),
+      expiresIn: this.jwtConfig.jwtExpAccessToken,
+      secret: this.jwtConfig.accessToken,
     });
   }
 
   createJwtRefreshToken(payload: Buffer | object): string {
     return this.jwtService.sign(payload, {
-      expiresIn: this.configService.get<number>('jwt.jwtExpRefreshToken'),
-      secret: this.configService.get<string>('jwt.refreshToken'),
+      expiresIn: this.jwtConfig.jwtExpRefreshToken,
+      secret: this.jwtConfig.refreshToken,
     });
   }
 }
