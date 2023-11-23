@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { TokenWhiteList } from './types/tokens-white-list.type';
 
 @Injectable()
 export class TokenService {
@@ -38,9 +37,7 @@ export class TokenService {
     };
   }
 
-  async getAccessTokenFromWhitelist(
-    accessToken: string,
-  ): Promise<TokenWhiteList | void> {
+  async getAccessTokenFromWhitelist(accessToken: string): Promise<void> {
     const payload = await this.jwtService.verifyAsync(accessToken, {
       secret: this.configService.get<string>('jwt.accessToken'),
     });
