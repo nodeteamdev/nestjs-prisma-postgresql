@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@providers/redis';
-import { SaveAccessTokenDto } from './dto/save-access-token.dto';
-import { SaveRefreshTokenDto } from './dto/save-refresh-token.dto';
+import { SaveAccessToken } from './types/save-access-token.type';
+import { SaveRefreshToken } from './types/save-refresh-token.type';
 
 @Injectable()
 export class TokenRepository {
@@ -45,15 +45,13 @@ export class TokenRepository {
     return this.redis.get(key);
   }
 
-  async saveAccessTokenToWhitelist(payload: SaveAccessTokenDto): Promise<void> {
+  async saveAccessTokenToWhitelist(payload: SaveAccessToken): Promise<void> {
     const { userId, accessToken, expireInSeconds } = payload;
     const key = this.generateRedisKeyForAccessToken(userId);
     await this.redis.save({ key, value: accessToken, expireInSeconds });
   }
 
-  async saveRefreshTokenToWhitelist(
-    payload: SaveRefreshTokenDto,
-  ): Promise<void> {
+  async saveRefreshTokenToWhitelist(payload: SaveRefreshToken): Promise<void> {
     const { userId, refreshToken, expireInSeconds } = payload;
     const key = this.generateRedisKeyForRefreshToken(userId);
     await this.redis.save({ key, value: refreshToken, expireInSeconds });
