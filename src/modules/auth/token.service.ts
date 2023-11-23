@@ -18,16 +18,18 @@ export class TokenService {
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
 
-    const _savedRefreshToken =
-      await this.tokenRepository.saveRefreshTokenToWhitelist(
-        userId,
-        _refreshToken,
-      );
+    const jwtConfig = this.configService.get('jwt');
+
+    await this.tokenRepository.saveRefreshTokenToWhitelist(
+      userId,
+      _refreshToken,
+      jwtConfig.jwtExpRefreshToken,
+    );
 
     await this.tokenRepository.saveAccessTokenToWhitelist(
       userId,
-      _savedRefreshToken.id,
       _accessToken,
+      jwtConfig.jwtExpAccessToken,
     );
 
     return {
@@ -39,8 +41,14 @@ export class TokenService {
   async getAccessTokenFromWhitelist(
     accessToken: string,
   ): Promise<TokenWhiteList | void> {
+    const payload = await this.jwtService.verifyAsync(accessToken, {
+      secret: this.configService.get<string>('jwt.accessToken'),
+    });
+
+    const userId = payload.id;
+
     const token = await this.tokenRepository.getAccessTokenFromWhitelist(
-      accessToken,
+      userId,
     );
 
     if (!token) {
@@ -52,18 +60,20 @@ export class TokenService {
   async refreshTokens(
     refreshToken: string,
   ): Promise<Auth.AccessRefreshTokens | void> {
+    const payload = await this.jwtService.verifyAsync(refreshToken, {
+      secret: this.configService.get<string>('jwt.refreshToken'),
+    });
+
+    const userId = payload.id;
+
     const token = await this.tokenRepository.getRefreshTokenFromWhitelist(
-      refreshToken,
+      userId,
     );
 
     if (!token) {
       // check if token is in the whitelist
       throw new UnauthorizedException();
     }
-
-    const payload = await this.jwtService.verifyAsync(refreshToken, {
-      secret: this.configService.get<string>('jwt.refreshToken'),
-    });
 
     const _payload = {
       id: payload.id,
@@ -74,16 +84,18 @@ export class TokenService {
     const _accessToken = this.createJwtAccessToken(_payload);
     const _refreshToken = this.createJwtRefreshToken(_payload);
 
-    const _savedRefreshToken =
-      await this.tokenRepository.saveRefreshTokenToWhitelist(
-        _payload.id,
-        _refreshToken,
-      );
+    const jwtConfig = this.configService.get('jwt');
+
+    await this.tokenRepository.saveRefreshTokenToWhitelist(
+      _payload.id,
+      _refreshToken,
+      jwtConfig.jwtExpRefreshToken,
+    );
 
     await this.tokenRepository.saveAccessTokenToWhitelist(
       _payload.id,
-      _savedRefreshToken.id,
       _accessToken,
+      jwtConfig.jwtExpAccessToken,
     );
 
     return {
@@ -93,17 +105,15 @@ export class TokenService {
   }
 
   async logout(accessToken: string): Promise<void> {
-    const _accessToken = await this.tokenRepository.getAccessTokenFromWhitelist(
-      accessToken,
-    );
+    const payload = await this.jwtService.verifyAsync(accessToken, {
+      secret: this.configService.get<string>('jwt.accessToken'),
+    });
+
+    const userId = payload.id;
 
     await Promise.all([
-      this.tokenRepository.deleteAccessTokenFromWhitelist(
-        _accessToken.accessToken,
-      ),
-      this.tokenRepository.deleteRefreshTokenFromWhitelist(
-        _accessToken.refreshToken,
-      ),
+      this.tokenRepository.deleteAccessTokenFromWhitelist(userId),
+      this.tokenRepository.deleteRefreshTokenFromWhitelist(userId),
     ]);
   }
 
