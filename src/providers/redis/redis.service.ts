@@ -23,7 +23,7 @@ export class RedisService {
 
   async save(payload: Redis.SaveData): Promise<void> {
     const { key, value, expireInSeconds } = payload;
-    let actions: Promise<'OK' | number>[];
+    const actions: Promise<'OK' | number>[] = [];
 
     actions.push(this.redisClient.set(key, value));
 
@@ -31,7 +31,7 @@ export class RedisService {
       actions.push(this.redisClient.expire(key, expireInSeconds));
     }
 
-    await Promise.all(actions);
+    Promise.all(actions);
   }
 
   async delete(key: string): Promise<boolean> {
