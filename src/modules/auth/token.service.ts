@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
-import { TokenData } from './types/token-data.type';
 
 @Injectable()
 export class TokenService {
@@ -17,7 +16,7 @@ export class TokenService {
     this.jwtConfig = this.configService.get('jwt');
   }
 
-  async sign(payload: TokenData): Promise<Auth.AccessRefreshTokens> {
+  async sign(payload: Auth.TokenData): Promise<Auth.AccessRefreshTokens> {
     const userId = payload.id;
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
@@ -81,7 +80,7 @@ export class TokenService {
       throw new UnauthorizedException();
     }
 
-    const _payload: TokenData = {
+    const _payload: Auth.TokenData = {
       id: payload.id,
       email: payload.email,
       roles: payload.roles,
@@ -129,14 +128,14 @@ export class TokenService {
     return bcrypt.compare(dtoPassword, password);
   }
 
-  createJwtAccessToken(payload: TokenData): string {
+  createJwtAccessToken(payload: Auth.TokenData): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpAccessToken,
       secret: this.jwtConfig.accessToken,
     });
   }
 
-  createJwtRefreshToken(payload: TokenData): string {
+  createJwtRefreshToken(payload: Auth.TokenData): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpRefreshToken,
       secret: this.jwtConfig.refreshToken,

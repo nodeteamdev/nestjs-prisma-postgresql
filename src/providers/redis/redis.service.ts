@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis, { Redis as RedisClient, RedisOptions } from 'ioredis';
-import { SaveDto } from './dto/save.dto';
 
 @Injectable()
 export class RedisService {
@@ -22,7 +21,7 @@ export class RedisService {
     return this.redisClient.get(key);
   }
 
-  async save(payload: SaveDto): Promise<void> {
+  async save(payload: Redis.SaveData): Promise<void> {
     const { key, value, expireInSeconds } = payload;
     let actions: Promise<'OK' | number>[];
 
