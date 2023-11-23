@@ -1,118 +1,65 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { RedisService } from '@providers/redis';
-import { TokenWhiteList } from './types/tokens-white-list.type';
 
 @Injectable()
 export class TokenRepository {
-  private readonly tokenPrefix: string;
+  private readonly accessTokenPrefix: string;
+  private readonly refreshTokenPrefix: string;
 
-  constructor(
-    private readonly redis: RedisService,
-    private readonly configService: ConfigService,
-  ) {
-    this.tokenPrefix = 'jwt-token:';
+  constructor(private readonly redis: RedisService) {
+    this.accessTokenPrefix = 'jwt-access:';
+    this.refreshTokenPrefix = 'jwt-refresh:';
   }
 
-  private getKey(tokenId: string): string {
-    return `${this.tokenPrefix}${tokenId}`;
+  private getAccessKey(userId: string): string {
+    return `${this.accessTokenPrefix}${userId}`;
   }
 
-  async getAccessTokenFromWhitelist(
-    accessToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(accessToken);
-    const cachedData = await this.redis.get(key);
-
-    return cachedData ? JSON.parse(cachedData) : null;
+  private getRefreshKey(userId: string): string {
+    return `${this.refreshTokenPrefix}${userId}`;
   }
 
-  async getUserAccessTokenFromWhitelist(
-    accessToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(accessToken);
-    const cachedData = await this.redis.get(key);
-
-    return cachedData ? JSON.parse(cachedData) : null;
+  async getAccessTokenFromWhitelist(userId: string): Promise<string | null> {
+    const key = this.getAccessKey(userId);
+    const cachedToken = await this.redis.get(key);
+    return cachedToken || null;
   }
 
-  async deleteAccessTokenFromWhitelist(accessToken: string): Promise<boolean> {
-    const key = this.getKey(accessToken);
+  async deleteAccessTokenFromWhitelist(userId: string): Promise<boolean> {
+    const key = this.getAccessKey(userId);
     return this.redis.delete(key);
   }
 
-  async deleteRefreshTokenFromWhitelist(
-    refreshToken: string,
-  ): Promise<boolean> {
-    const key = this.getKey(refreshToken);
+  async deleteRefreshTokenFromWhitelist(userId: string): Promise<boolean> {
+    const key = this.getRefreshKey(userId);
     return this.redis.delete(key);
   }
 
-  async getRefreshTokenFromWhitelist(
-    refreshToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(refreshToken);
-    const cachedData = await this.redis.get(key);
-
-    return cachedData ? JSON.parse(cachedData) : null;
+  async getRefreshTokenFromWhitelist(userId: string): Promise<string | null> {
+    const key = this.getRefreshKey(userId);
+    const cachedToken = await this.redis.get(key);
+    return cachedToken || null;
   }
 
   async saveAccessTokenToWhitelist(
     userId: string,
-    refreshTokenId: string,
     accessToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(accessToken);
+    expireInSeconds: number,
+  ): Promise<string | null> {
+    const key = this.getAccessKey(userId);
 
-    const jwtConfig = this.configService.get('jwt');
-    const expiredAt = new Date(Date.now() + jwtConfig.jwtExpAccessToken);
-
-    const value: TokenWhiteList = {
-      userId,
-      refreshTokenId,
-      accessToken,
-      refreshToken: null,
-      expiredAt,
-      id: '',
-      createdAt: new Date(Date.now()),
-      updatedAt: new Date(Date.now()),
-    };
-
-    const success = await this.redis.save(
-      key,
-      JSON.stringify(value),
-      jwtConfig.jwtExpAccessToken,
-    );
-
-    return success ? value : null;
+    const success = await this.redis.save(key, accessToken, expireInSeconds);
+    return success ? accessToken : null;
   }
 
   async saveRefreshTokenToWhitelist(
     userId: string,
     refreshToken: string,
-  ): Promise<TokenWhiteList | null> {
-    const key = this.getKey(refreshToken);
+    expireInSeconds: number,
+  ): Promise<string | null> {
+    const key = this.getRefreshKey(userId);
 
-    const jwtConfig = this.configService.get('jwt');
-    const expiredAt = new Date(Date.now() + jwtConfig.jwtExpRefreshToken);
-
-    const value: TokenWhiteList = {
-      userId,
-      accessToken: null,
-      refreshTokenId: null,
-      refreshToken,
-      expiredAt,
-      id: '',
-      createdAt: new Date(Date.now()),
-      updatedAt: new Date(Date.now()),
-    };
-
-    const success = await this.redis.save(
-      key,
-      JSON.stringify(value),
-      jwtConfig.jwtExpRefreshToken,
-    );
-
-    return success ? value : null;
+    const success = await this.redis.save(key, refreshToken, expireInSeconds);
+    return success ? refreshToken : null;
   }
 }

@@ -10,10 +10,8 @@ export default registerAs('sqs', () => ({
     },
     region: 'us-east-1',
     credentials: {
-      accessKeyId: process.env.AWS_SQS_ACCESS_KEY_ID || 'AKIARDXXHYJWXVWK7FMK',
-      secretAccessKey:
-        process.env.AWS_SQS_SECRET_ACCESS_KEY ||
-        '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',
+      accessKeyId: process.env.AWS_SQS_ACCESS_KEY_ID || '',
+      secretAccessKey: process.env.AWS_SQS_SECRET_ACCESS_KEY || '',
     },
   },
   producer: {
@@ -25,10 +23,8 @@ export default registerAs('sqs', () => ({
     queueUrl: 'https://sqs.us-east-1.amazonaws.com/076754174573/example-queue',
     region: 'us-east-1',
     credentials: {
-      accessKeyId: process.env.AWS_SQS_ACCESS_KEY_ID || 'AKIARDXXHYJWXERK7FMK',
-      secretAccessKey:
-        process.env.AWS_SQS_SECRET_ACCESS_KEY ||
-        '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',
+      accessKeyId: process.env.AWS_SQS_ACCESS_KEY_ID || '',
+      secretAccessKey: process.env.AWS_SQS_SECRET_ACCESS_KEY || '',
     },
   },
 }));

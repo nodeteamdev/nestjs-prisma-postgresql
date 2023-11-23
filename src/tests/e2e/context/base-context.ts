@@ -1,4 +1,4 @@
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaClient } from '@prisma/client';
 import { Server } from 'http';
@@ -8,6 +8,7 @@ import TestService from '@tests/e2e/test.service';
 import { AdminUserInterface } from '@tests/e2e/interfaces/admin-user.interface';
 import { IMakeRequest } from '@tests/e2e/interfaces/make-request.interface';
 import makeRequest from '@tests/e2e/common/make-request';
+import { RedisService } from '@providers/redis';
 
 class BaseContext {
   private _app!: INestApplication;
@@ -17,6 +18,8 @@ class BaseContext {
   private _server!: Server;
 
   private _connection!: PrismaClient;
+
+  private _redis!: RedisService;
 
   public service!: TestService;
 
@@ -45,10 +48,12 @@ class BaseContext {
   }
 
   async end() {
-    // const deleteUsers = this._connection.user.deleteMany();
-    // const deleteTokens = this._connection.tokenWhiteList.deleteMany(); //TODO:
-    // await this._connection.$transaction([deleteUsers, deleteTokens]);
-    // await this._app.close();
+    const deleteUsers = this._connection.user.deleteMany();
+    await this._connection.$transaction([deleteUsers]);
+
+    this._redis.deleteAll();
+
+    await this._app.close();
   }
 }
 

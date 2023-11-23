@@ -15,7 +15,6 @@ import { faker } from '@faker-js/faker';
 import { PrismaService } from '@providers/prisma';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import PaginatedResult = PaginatorTypes.PaginatedResult;
-import { INestApplication } from '@nestjs/common';
 import {
   createUsers,
   getPaginatedData,

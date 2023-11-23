@@ -3,8 +3,7 @@ import { AuthService } from '@modules/auth/auth.service';
 import { PrismaClient, User } from '@prisma/client';
 import { INestApplication } from '@nestjs/common';
 import { AdminUserInterface } from '@tests/e2e/interfaces/admin-user.interface';
-import { Roles } from '@modules/app/app.roles';
-import { createUsers, getSignUpData } from '@tests/common/user.mock.functions';
+import { getSignUpData } from '@tests/common/user.mock.functions';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
 
@@ -24,8 +23,6 @@ class TestService {
   }
 
   async createGlobalAdmin(): Promise<AdminUserInterface> {
-    const role: Roles.admin[] = [Roles.admin];
-
     const signUpData: SignUpDto = getSignUpData();
     const userPassword: string = signUpData.password;
 
@@ -40,7 +37,7 @@ class TestService {
       },
     });
 
-    const { id, phone, email, password } = newAdmin;
+    const { id, phone, email } = newAdmin;
 
     const { accessToken, refreshToken } = await this._authService.signIn({
       email,

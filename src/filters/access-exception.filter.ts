@@ -22,7 +22,7 @@ interface ExceptionResponse {
 @Catch(UnauthorizedException, ForbiddenException)
 export class AccessExceptionFilter extends BaseExceptionFilter {
   catch(
-    exception: UnauthorizedException | ForbiddenException | any,
+    exception: UnauthorizedException | ForbiddenException,
     host: ArgumentsHost,
   ) {
     if (exception instanceof UnauthorizedException) {

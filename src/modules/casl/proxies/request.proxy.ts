@@ -1,10 +1,13 @@
-import { AuthorizableRequest } from '@modules/casl';
 import { CaslRequestCache } from '../interfaces/casl-request-cache.interface';
-import { AuthorizableUser } from '@modules/casl';
-import { SubjectBeforeFilterHook, UserBeforeFilterHook } from '@modules/casl';
+import {
+  AuthorizableRequest,
+  AuthorizableUser,
+  ConditionsProxy,
+  SubjectBeforeFilterHook,
+  UserBeforeFilterHook,
+} from '@modules/casl';
 import { NullSubjectHook } from '../factories/subject-hook.factory';
 import { NullUserHook } from '../factories/user-hook.factory';
-import { ConditionsProxy } from '@modules/casl';
 
 export class RequestProxy<
   User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
@@ -18,13 +21,11 @@ export class RequestProxy<
   };
 
   constructor(private request: AuthorizableRequest<User, Subject>) {
-    this.request.casl =
-      this.request.casl ||
-      (this.defaultCaslCache as CaslRequestCache<User, Subject>);
+    this.request.casl = this.request.casl || this.defaultCaslCache;
   }
 
   public get cached(): CaslRequestCache<User, Subject> {
-    return this.request.casl as CaslRequestCache<User, Subject>;
+    return this.request.casl;
   }
 
   public getConditions(): ConditionsProxy | undefined {

@@ -11,7 +11,6 @@ export class NullSubjectHook implements SubjectBeforeFilterHook {
   }
 }
 
-// TODO request generic params
 export class TupleSubjectHook<Service> implements SubjectBeforeFilterHook {
   constructor(
     private service: Service,
@@ -30,7 +29,9 @@ export class TupleSubjectHook<Service> implements SubjectBeforeFilterHook {
 
 export async function subjectHookFactory(
   moduleRef: ModuleRef,
-  hookOrTuple?: Casl.AnyClass<SubjectBeforeFilterHook> | SubjectBeforeFilterTuple,
+  hookOrTuple?:
+    | Casl.AnyClass<SubjectBeforeFilterHook>
+    | SubjectBeforeFilterTuple,
 ): Promise<SubjectBeforeFilterHook> {
   if (!hookOrTuple) {
     return new NullSubjectHook();

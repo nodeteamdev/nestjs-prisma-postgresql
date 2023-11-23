@@ -1,5 +1,3 @@
-export * from './custom';
-
 export * from './prisma.module';
 export * from './prisma.service';
 export * from './middlewares/logging.middleware';

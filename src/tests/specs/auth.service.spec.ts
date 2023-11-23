@@ -6,7 +6,7 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TokenRepository } from '@modules/auth/token.repository';
 import { PrismaService } from '@providers/prisma';
-import { Prisma, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -15,7 +15,6 @@ import { permissions } from '@modules/auth/auth.permissions';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import {
   ConflictException,
-  INestApplication,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -243,7 +242,6 @@ describe('AuthService', () => {
       });
 
       it('should remove tokens from white list', async () => {
-        const userId = faker.string.alphanumeric({ length: 12 });
         const accessToken = faker.string.alphanumeric({ length: 40 });
         expect(await authService.logout(accessToken)).toBe(null);
       });

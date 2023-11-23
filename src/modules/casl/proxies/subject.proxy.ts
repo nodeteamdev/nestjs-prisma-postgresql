@@ -1,5 +1,4 @@
-import { AuthorizableUser } from '@modules/casl';
-import { AuthorizableRequest } from '@modules/casl';
+import { AuthorizableUser, AuthorizableRequest } from '@modules/casl';
 import { RequestProxy } from './request.proxy';
 
 export class SubjectProxy<Subject = Casl.AnyObject> {

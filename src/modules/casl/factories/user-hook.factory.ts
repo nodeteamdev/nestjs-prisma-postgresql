@@ -12,7 +12,6 @@ export class NullUserHook implements UserBeforeFilterHook {
   }
 }
 
-// TODO request generic params
 export class TupleUserHook<Service> implements UserBeforeFilterHook {
   constructor(
     private service: Service,
