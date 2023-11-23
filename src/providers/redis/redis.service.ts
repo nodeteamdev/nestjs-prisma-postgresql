@@ -36,7 +36,7 @@ export class RedisService {
 
   async delete(key: string): Promise<boolean> {
     const result = await this.redisClient.del(key);
-    return result === 1; // Return true if the key was deleted, false otherwise
+    return result === 1;
   }
 
   async deleteAll(): Promise<boolean> {
