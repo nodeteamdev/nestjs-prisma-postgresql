@@ -1,10 +1,10 @@
 import DefaultContext from '@tests/e2e/context/default-context';
-import { User } from '@prisma/client';
 import { USERS } from '@tests/e2e/common/routes';
 import { AccessRefreshTokens } from '@modules/auth/types/auth.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 export default (ctx: DefaultContext) => {
-  let user: User;
+  let user: UserEntity;
   let tokens: AccessRefreshTokens;
 
   beforeAll(async () => {

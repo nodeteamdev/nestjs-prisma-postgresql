@@ -17,16 +17,19 @@ export type SubjectBeforeFilterTuple<
 ];
 
 export interface UserBeforeFilterHook<
-  User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
-  RequestUser = User,
+  UserEntity extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
+  RequestUser = UserEntity,
 > {
-  run: (user: RequestUser) => Promise<User | undefined>;
+  run: (user: RequestUser) => Promise<UserEntity | undefined>;
 }
 
 export type UserBeforeFilterTuple<
-  User extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
-  RequestUser = User,
+  UserEntity extends AuthorizableUser<unknown, unknown> = AuthorizableUser,
+  RequestUser = UserEntity,
 > = [
   Casl.AnyClass,
-  (service: InstanceType<Casl.AnyClass>, user: RequestUser) => Promise<User>,
+  (
+    service: InstanceType<Casl.AnyClass>,
+    user: RequestUser,
+  ) => Promise<UserEntity>,
 ];

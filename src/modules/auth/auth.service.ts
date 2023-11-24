@@ -11,10 +11,10 @@ import {
   NOT_FOUND,
   USER_CONFLICT,
 } from '@constants/errors.constants';
-import { User } from '@prisma/client';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import { TokenService } from '@modules/auth/token.service';
 import { AccessRefreshTokens } from './types/auth.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -29,8 +29,8 @@ export class AuthService {
    * @returns Promise<User> - Created user
    * @throws ConflictException - User with this email or phone already exists
    */
-  async singUp(signUpDto: SignUpDto): Promise<User> {
-    const testUser: User = await this.userRepository.findOne({
+  async singUp(signUpDto: SignUpDto): Promise<UserEntity> {
+    const testUser: UserEntity = await this.userRepository.findOne({
       where: { email: signUpDto.email },
     });
 
@@ -50,7 +50,7 @@ export class AuthService {
    * @param signInDto - User credentials
    */
   async signIn(signInDto: SignInDto): Promise<AccessRefreshTokens> {
-    const testUser: User = await this.userRepository.findOne({
+    const testUser: UserEntity = await this.userRepository.findOne({
       where: {
         email: signInDto.email,
       },
@@ -58,7 +58,6 @@ export class AuthService {
         id: true,
         email: true,
         password: true,
-        roles: true,
       },
     });
 

@@ -1,4 +1,3 @@
-import { Config } from '@config/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -6,12 +5,13 @@ import {
   PutObjectCommand,
   PutObjectCommandOutput,
 } from '@aws-sdk/client-s3';
+import { S3Config } from '@config/types/config.types';
 
 @Injectable()
 export default class S3Service {
   client!: S3Client;
 
-  config: Config.S3Config;
+  config: S3Config;
 
   private logger = new Logger(S3Service.name);
 

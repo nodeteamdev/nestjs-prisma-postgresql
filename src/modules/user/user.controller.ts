@@ -26,6 +26,7 @@ import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { UserHook } from '@modules/user/user.hook';
 import ApiOkBaseResponse from '@decorators/api-ok-base-response.decorator';
+import { UserWithRoles } from './types/user.types';
 
 @ApiTags('Users')
 @ApiBearerAuth()
@@ -55,7 +56,9 @@ export class UserController {
   @UseGuards(AccessGuard)
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.read, UserEntity)
-  async me(@CaslUser() userProxy?: UserProxy<User>): Promise<User> {
+  async me(
+    @CaslUser() userProxy?: UserProxy<UserWithRoles>,
+  ): Promise<UserEntity> {
     const tokenUser = await userProxy.get();
 
     return this.userService.findOne(tokenUser.id);
@@ -66,7 +69,7 @@ export class UserController {
   @Serialize(UserBaseEntity)
   @UseAbility(Actions.update, UserEntity, UserHook)
   async updateUser(
-    @CaslUser() userProxy?: UserProxy<User>,
+    @CaslUser() userProxy?: UserProxy<UserWithRoles>,
     @CaslConditions() conditions?: ConditionsProxy,
     @CaslSubject() subjectProxy?: SubjectProxy<User>,
   ): Promise<User> {

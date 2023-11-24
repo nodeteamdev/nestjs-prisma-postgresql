@@ -1,7 +1,10 @@
 import { PrismaService } from '@providers/prisma';
 import { Injectable } from '@nestjs/common';
 import { paginator, PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
-import { Prisma, User } from '@prisma/client';
+import { Prisma, Roles, User } from '@prisma/client';
+import { mapUserWithRolesToEntity } from './helpers/map-user-with-roles-to-entity';
+import UserEntity from './entities/user.entity';
+import { UserWithRoles } from './types/user.types';
 
 @Injectable()
 export class UserRepository {
@@ -20,10 +23,17 @@ export class UserRepository {
     });
   }
 
-  findById(id: string): Promise<User> {
-    return this.prisma.user.findUnique({
+  async findById(id: string): Promise<UserEntity | null> {
+    const user = (await this.prisma.user.findFirst({
       where: { id },
-    });
+      select: { roles: { select: { role: true } } },
+    })) as UserWithRoles;
+
+    if (!user) {
+      return null;
+    }
+
+    return mapUserWithRolesToEntity(user);
   }
 
   /**
@@ -32,8 +42,18 @@ export class UserRepository {
    * @returns Promise<User | null>
    *       If the user is not found, return null
    */
-  async findOne(params: Prisma.UserFindFirstArgs): Promise<User | null> {
-    return this.prisma.user.findFirst(params);
+  async findOne(params: Prisma.UserFindFirstArgs): Promise<UserEntity | null> {
+    const { select, ...rest } = params;
+    const user = await this.prisma.user.findFirst({
+      ...rest,
+      select: { ...select, roles: { select: { role: true } } },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return mapUserWithRolesToEntity(user as UserWithRoles);
   }
 
   /**
@@ -41,10 +61,20 @@ export class UserRepository {
    * @param data Prisma.UserCreateInput
    * @returns Promise<User>
    */
-  async create(data: Prisma.UserCreateInput): Promise<User> {
-    return this.prisma.user.create({
-      data,
+  async create(data: Prisma.UserCreateInput): Promise<UserEntity> {
+    const user = await this.prisma.user.create({
+      data: {
+        ...data,
+        roles: { create: [{ role: Roles.customer }] },
+      },
+      include: { roles: { select: { role: true } } },
     });
+
+    if (!user) {
+      return null;
+    }
+
+    return mapUserWithRolesToEntity(user);
   }
 
   /**
