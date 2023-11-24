@@ -1,13 +1,14 @@
-import { Config } from '@config/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenRepository } from '@modules/auth/token.repository';
+import { JwtConfig } from '@config/types/config.types';
+import { AccessRefreshTokens, UserPayload } from './types/auth.types';
 
 @Injectable()
 export class TokenService {
-  jwtConfig: Config.JwtConfig;
+  jwtConfig: JwtConfig;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -17,7 +18,7 @@ export class TokenService {
     this.jwtConfig = this.configService.get('jwt');
   }
 
-  async sign(payload: Auth.UserPayload): Promise<Auth.AccessRefreshTokens> {
+  async sign(payload: UserPayload): Promise<AccessRefreshTokens> {
     const userId = payload.id;
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
@@ -60,7 +61,7 @@ export class TokenService {
 
   async refreshTokens(
     refreshToken: string,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<AccessRefreshTokens | void> {
     const payload = await this.jwtService.verifyAsync(refreshToken, {
       secret: this.jwtConfig.refreshToken,
     });
@@ -81,7 +82,7 @@ export class TokenService {
       throw new UnauthorizedException();
     }
 
-    const _payload: Auth.UserPayload = {
+    const _payload: UserPayload = {
       id: payload.id,
       email: payload.email,
       roles: payload.roles,
@@ -129,14 +130,14 @@ export class TokenService {
     return bcrypt.compare(dtoPassword, password);
   }
 
-  createJwtAccessToken(payload: Auth.UserPayload): string {
+  createJwtAccessToken(payload: UserPayload): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpAccessToken,
       secret: this.jwtConfig.accessToken,
     });
   }
 
-  createJwtRefreshToken(payload: Auth.UserPayload): string {
+  createJwtRefreshToken(payload: UserPayload): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpRefreshToken,
       secret: this.jwtConfig.refreshToken,

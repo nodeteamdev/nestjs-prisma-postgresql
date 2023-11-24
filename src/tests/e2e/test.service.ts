@@ -6,6 +6,7 @@ import { AdminUserInterface } from '@tests/e2e/interfaces/admin-user.interface';
 import { getSignUpData } from '@tests/common/user.mock.functions';
 import { SignUpDto } from '@modules/auth/dto/sign-up.dto';
 import { faker } from '@faker-js/faker';
+import { AccessRefreshTokens } from '@modules/auth/types/auth.types';
 
 class TestService {
   private _authService!: AuthService;
@@ -74,7 +75,7 @@ class TestService {
     };
   }
 
-  async getTokens(user: User): Promise<Auth.AccessRefreshTokens> {
+  async getTokens(user: User): Promise<AccessRefreshTokens> {
     return this._tokenService.sign({
       id: user.id,
       email: user.email,

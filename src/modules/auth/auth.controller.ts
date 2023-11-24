@@ -17,6 +17,7 @@ import {
   UserProxy,
 } from '@modules/casl';
 import { TokensEntity } from '@modules/auth/entities/tokens.entity';
+import { AccessRefreshTokens } from './types/auth.types';
 
 @ApiTags('Auth')
 @ApiBaseResponses()
@@ -35,7 +36,7 @@ export class AuthController {
   @ApiBody({ type: SignInDto })
   @SkipAuth()
   @Post('sign-in')
-  signIn(@Body() signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
+  signIn(@Body() signInDto: SignInDto): Promise<AccessRefreshTokens> {
     return this.authService.signIn(signInDto);
   }
 
@@ -44,7 +45,7 @@ export class AuthController {
   @Post('token/refresh')
   refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<AccessRefreshTokens | void> {
     return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 
