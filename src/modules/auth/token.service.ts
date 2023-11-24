@@ -36,8 +36,8 @@ export class TokenService {
     ]);
 
     return {
-      refreshToken: _accessToken,
-      accessToken: _refreshToken,
+      refreshToken: _refreshToken,
+      accessToken: _accessToken,
     };
   }
 
