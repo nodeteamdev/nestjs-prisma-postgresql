@@ -14,7 +14,7 @@ declare namespace Auth {
     refreshToken: string;
   };
 
-  export type TokenData = {
+  export type UserPayload = {
     id: string;
     email: string;
     roles: Roles[];

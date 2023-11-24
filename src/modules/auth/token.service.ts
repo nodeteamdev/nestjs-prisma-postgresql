@@ -17,7 +17,7 @@ export class TokenService {
     this.jwtConfig = this.configService.get('jwt');
   }
 
-  async sign(payload: Auth.TokenData): Promise<Auth.AccessRefreshTokens> {
+  async sign(payload: Auth.UserPayload): Promise<Auth.AccessRefreshTokens> {
     const userId = payload.id;
     const _accessToken = this.createJwtAccessToken(payload);
     const _refreshToken = this.createJwtRefreshToken(payload);
@@ -81,7 +81,7 @@ export class TokenService {
       throw new UnauthorizedException();
     }
 
-    const _payload: Auth.TokenData = {
+    const _payload: Auth.UserPayload = {
       id: payload.id,
       email: payload.email,
       roles: payload.roles,
@@ -129,14 +129,14 @@ export class TokenService {
     return bcrypt.compare(dtoPassword, password);
   }
 
-  createJwtAccessToken(payload: Auth.TokenData): string {
+  createJwtAccessToken(payload: Auth.UserPayload): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpAccessToken,
       secret: this.jwtConfig.accessToken,
     });
   }
 
-  createJwtRefreshToken(payload: Auth.TokenData): string {
+  createJwtRefreshToken(payload: Auth.UserPayload): string {
     return this.jwtService.sign(payload, {
       expiresIn: this.jwtConfig.jwtExpRefreshToken,
       secret: this.jwtConfig.refreshToken,

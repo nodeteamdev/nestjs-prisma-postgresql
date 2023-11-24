@@ -45,17 +45,19 @@ export class TokenRepository {
 
   async saveAccessTokenToWhitelist(
     payload: Auth.SaveAccessToken,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { userId, accessToken, expireInSeconds } = payload;
     const key = this.generateRedisKeyForAccessToken(userId);
-    await this.redis.save({ key, value: accessToken, expireInSeconds });
+
+    return this.redis.save({ key, value: accessToken, expireInSeconds });
   }
 
   async saveRefreshTokenToWhitelist(
     payload: Auth.SaveRefreshToken,
-  ): Promise<void> {
+  ): Promise<boolean> {
     const { userId, refreshToken, expireInSeconds } = payload;
     const key = this.generateRedisKeyForRefreshToken(userId);
-    await this.redis.save({ key, value: refreshToken, expireInSeconds });
+
+    return this.redis.save({ key, value: refreshToken, expireInSeconds });
   }
 }
