@@ -7,10 +7,10 @@ import sqsConfig from './sqs.config';
 import swaggerConfig from './swagger.config';
 
 declare namespace Config {
-  export type AppConfig = ConfigType<typeof appConfig>;
-  export type JwtConfig = ConfigType<typeof jwtConfig>;
-  export type RedisConfig = ConfigType<typeof redisConfig>;
-  export type S3Config = ConfigType<typeof s3Config>;
-  export type SqsConfig = ConfigType<typeof sqsConfig>;
-  export type SwaggerConfig = ConfigType<typeof swaggerConfig>;
+  export type AppConfig = Readonly<ConfigType<typeof appConfig>>;
+  export type JwtConfig = Readonly<ConfigType<typeof jwtConfig>>;
+  export type RedisConfig = Readonly<ConfigType<typeof redisConfig>>;
+  export type S3Config = Readonly<ConfigType<typeof s3Config>>;
+  export type SqsConfig = Readonly<ConfigType<typeof sqsConfig>>;
+  export type SwaggerConfig = Readonly<ConfigType<typeof swaggerConfig>>;
 }
