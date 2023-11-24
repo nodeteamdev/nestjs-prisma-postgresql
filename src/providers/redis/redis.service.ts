@@ -1,13 +1,14 @@
+import { Config } from '@config/config';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Redis, { Redis as RedisClient, RedisOptions } from 'ioredis';
+import Redis, { Redis as RedisClient } from 'ioredis';
 
 @Injectable()
 export class RedisService {
   redisClient: RedisClient;
 
   constructor(private configService: ConfigService) {
-    const redisConfig: RedisOptions = this.configService.get('redis');
+    const redisConfig: Config.RedisConfig = this.configService.get('redis');
 
     this.redisClient = new Redis({
       port: redisConfig.port,
@@ -18,7 +19,7 @@ export class RedisService {
   }
 
   async get(key: string): Promise<string | null> {
-    return this.redisClient.get(key);
+    return await this.redisClient.get(key);
   }
 
   async save(payload: Redis.SaveData): Promise<void> {

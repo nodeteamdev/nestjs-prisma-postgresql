@@ -20,6 +20,7 @@ import { ThrottlerExceptionsFilter } from '@filters/throttler-exception.filter';
 import { TransformInterceptor } from '@interceptors/transform.interceptor';
 import { AccessExceptionFilter } from '@filters/access-exception.filter';
 import { NotFoundExceptionFilter } from '@filters/not-found-exception.filter';
+import { Config } from '@config/config';
 
 async function bootstrap(): Promise<{ port: number }> {
   /**
@@ -31,8 +32,8 @@ async function bootstrap(): Promise<{ port: number }> {
   });
 
   const configService: ConfigService<any, boolean> = app.get(ConfigService);
-  const appConfig = configService.get('app');
-  const swaggerConfig = configService.get('swagger');
+  const appConfig: Config.AppConfig = configService.get('app');
+  const swaggerConfig: Config.SwaggerConfig = configService.get('swagger');
 
   {
     /**

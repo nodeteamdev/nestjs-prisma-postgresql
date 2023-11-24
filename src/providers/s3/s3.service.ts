@@ -1,3 +1,4 @@
+import { Config } from '@config/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
@@ -10,7 +11,7 @@ import {
 export default class S3Service {
   client!: S3Client;
 
-  config;
+  config: Config.S3Config;
 
   private logger = new Logger(S3Service.name);
 

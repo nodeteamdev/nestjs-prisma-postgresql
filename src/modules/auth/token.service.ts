@@ -1,3 +1,4 @@
+import { Config } from '@config/config';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -6,7 +7,7 @@ import { TokenRepository } from '@modules/auth/token.repository';
 
 @Injectable()
 export class TokenService {
-  jwtConfig;
+  jwtConfig: Config.JwtConfig;
 
   constructor(
     private readonly jwtService: JwtService,
