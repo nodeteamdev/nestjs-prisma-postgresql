@@ -1,6 +1,5 @@
 import { Server } from 'http';
 import { IMakeRequest } from '@tests/e2e/interfaces/make-request.interface';
-// eslint-disable-next-line import/no-extraneous-dependencies
 import * as request from 'supertest';
 
 export default (server: Server): IMakeRequest => ({
