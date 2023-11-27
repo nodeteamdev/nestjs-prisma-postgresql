@@ -3,6 +3,8 @@ import { faker } from '@faker-js/faker';
 import { User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
 import PaginatedResult = PaginatorTypes.PaginatedResult;
+import { AccessRefreshTokens } from '@modules/auth/types/auth.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 export function getSignUpData(email?: string): SignUpDto {
   return {
@@ -27,10 +29,10 @@ export function getPaginatedData<T>(input: T[]): PaginatedResult<T> {
   };
 }
 
-export function createUsers(length: number): User[] {
-  const result: User[] = [];
+export function createUsers(length: number): UserEntity[] {
+  const result: UserEntity[] = [];
   for (let i = 0; i < length; i++) {
-    const user: User = {
+    const user: UserEntity = {
       id: faker.string.alphanumeric({ length: 12 }),
       ...getSignUpData(),
       phone: null,
@@ -40,10 +42,11 @@ export function createUsers(length: number): User[] {
     };
     result.push(user);
   }
+
   return result;
 }
 
-export function getJwtTokens(): Auth.AccessRefreshTokens {
+export function getJwtTokens(): AccessRefreshTokens {
   return {
     accessToken: faker.string.alphanumeric({ length: 40 }),
     refreshToken: faker.string.alphanumeric({ length: 40 }),

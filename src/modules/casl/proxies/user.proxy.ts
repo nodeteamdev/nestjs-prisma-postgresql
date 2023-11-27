@@ -48,6 +48,7 @@ export class UserProxy<
     }
 
     req.setUser(await req.getUserHook().run(requestUser));
+
     return req.getUser();
   }
 

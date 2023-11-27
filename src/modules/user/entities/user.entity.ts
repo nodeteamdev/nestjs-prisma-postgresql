@@ -1,5 +1,4 @@
-import { User } from '@prisma/client';
-import { Roles } from '@modules/app/app.roles';
+import { Roles, User } from '@prisma/client';
 
 export default class UserEntity implements User {
   readonly id!: string;
@@ -19,6 +18,4 @@ export default class UserEntity implements User {
   readonly createdAt!: Date;
 
   readonly updatedAt!: Date;
-
-  readonly isVerified!: boolean;
 }

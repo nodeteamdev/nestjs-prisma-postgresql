@@ -14,6 +14,7 @@ export class CaslConfig {
         getUserFromRequest: (request) => request.user,
       };
     }
+
     return rootOptions;
   }
 }

@@ -39,7 +39,9 @@ export async function subjectHookFactory(
   if (Array.isArray(hookOrTuple)) {
     const [ServiceClass, runFunction] = hookOrTuple;
     const service = moduleRef.get(ServiceClass, { strict: false });
+
     return new TupleSubjectHook<typeof ServiceClass>(service, runFunction);
   }
+
   return moduleRef.create<SubjectBeforeFilterHook>(hookOrTuple);
 }

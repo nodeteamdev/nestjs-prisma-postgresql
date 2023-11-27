@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RedisService } from '@providers/redis';
+import {
+  SaveAccessTokenPayload,
+  SaveRefreshTokenPayload,
+} from './types/token.types';
 
 @Injectable()
 export class TokenRepository {
@@ -11,55 +15,53 @@ export class TokenRepository {
     this.refreshTokenPrefix = 'jwt-refresh:';
   }
 
-  private getAccessKey(userId: string): string {
+  private generateRedisKeyForAccessToken(userId: string): string {
     return `${this.accessTokenPrefix}${userId}`;
   }
 
-  private getRefreshKey(userId: string): string {
+  private generateRedisKeyForRefreshToken(userId: string): string {
     return `${this.refreshTokenPrefix}${userId}`;
   }
 
   async getAccessTokenFromWhitelist(userId: string): Promise<string | null> {
-    const key = this.getAccessKey(userId);
-    const cachedToken = await this.redis.get(key);
-    return cachedToken || null;
+    const key = this.generateRedisKeyForAccessToken(userId);
+
+    return this.redis.get(key);
   }
 
   async deleteAccessTokenFromWhitelist(userId: string): Promise<boolean> {
-    const key = this.getAccessKey(userId);
+    const key = this.generateRedisKeyForAccessToken(userId);
+
     return this.redis.delete(key);
   }
 
   async deleteRefreshTokenFromWhitelist(userId: string): Promise<boolean> {
-    const key = this.getRefreshKey(userId);
+    const key = this.generateRedisKeyForRefreshToken(userId);
+
     return this.redis.delete(key);
   }
 
   async getRefreshTokenFromWhitelist(userId: string): Promise<string | null> {
-    const key = this.getRefreshKey(userId);
-    const cachedToken = await this.redis.get(key);
-    return cachedToken || null;
+    const key = this.generateRedisKeyForRefreshToken(userId);
+
+    return this.redis.get(key);
   }
 
   async saveAccessTokenToWhitelist(
-    userId: string,
-    accessToken: string,
-    expireInSeconds: number,
-  ): Promise<string | null> {
-    const key = this.getAccessKey(userId);
+    payload: SaveAccessTokenPayload,
+  ): Promise<boolean> {
+    const { userId, accessToken, expireInSeconds } = payload;
+    const key = this.generateRedisKeyForAccessToken(userId);
 
-    const success = await this.redis.save(key, accessToken, expireInSeconds);
-    return success ? accessToken : null;
+    return this.redis.save({ key, value: accessToken, expireInSeconds });
   }
 
   async saveRefreshTokenToWhitelist(
-    userId: string,
-    refreshToken: string,
-    expireInSeconds: number,
-  ): Promise<string | null> {
-    const key = this.getRefreshKey(userId);
+    payload: SaveRefreshTokenPayload,
+  ): Promise<boolean> {
+    const { userId, refreshToken, expireInSeconds } = payload;
+    const key = this.generateRedisKeyForRefreshToken(userId);
 
-    const success = await this.redis.save(key, refreshToken, expireInSeconds);
-    return success ? refreshToken : null;
+    return this.redis.save({ key, value: refreshToken, expireInSeconds });
   }
 }

@@ -20,6 +20,7 @@ import {
   getPaginatedData,
 } from '@tests/common/user.mock.functions';
 import mockUserRepository from '@tests/mocks/user.repository.mock';
+import UserEntity from '@modules/user/entities/user.entity';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -55,7 +56,7 @@ describe('UserService', () => {
 
   describe('when the findById method is calling', () => {
     describe('and a exists id is provided', () => {
-      let userDataMock: User;
+      let userDataMock: UserEntity;
 
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
@@ -83,15 +84,15 @@ describe('UserService', () => {
 
   describe('when the findById method is calling', () => {
     describe('and a exists id is provided', () => {
-      let userDataMock: User;
+      let userDataMock: UserEntity;
 
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
-        mockUserRepository.findOne.mockReturnValueOnce(userDataMock);
+        mockUserRepository.findById.mockReturnValueOnce(userDataMock);
       });
 
       it('should return user data', async () => {
-        expect(await userService.findOne(userDataMock.id)).toStrictEqual(
+        expect(await userService.findById(userDataMock.id)).toStrictEqual(
           userDataMock,
         );
       });
@@ -99,19 +100,19 @@ describe('UserService', () => {
 
     describe('and a not found id is provided', () => {
       beforeEach(async () => {
-        mockUserRepository.findOne.mockReturnValueOnce(null);
+        mockUserRepository.findById.mockReturnValueOnce(null);
       });
 
       it('should return null', async () => {
         const id = faker.string.alphanumeric();
-        expect(await userService.findOne(id)).toBe(null);
+        expect(await userService.findById(id)).toBe(null);
       });
     });
   });
 
   describe('when the findAll method is calling', () => {
-    let usersMock: User[];
-    let paginatedData: PaginatedResult<User>;
+    let usersMock: UserEntity[];
+    let paginatedData: PaginatedResult<UserEntity>;
 
     beforeEach(async () => {
       usersMock = createUsers(5);

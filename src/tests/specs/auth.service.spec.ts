@@ -33,6 +33,7 @@ import mockTokenService from '@tests/mocks/token.service.mock';
 import mockUserRepository from '@tests/mocks/user.repository.mock';
 import { RedisService } from '@providers/redis';
 import redisConfig from '@config/redis.config';
+import { AccessRefreshTokens } from '@modules/auth/types/auth.types';
 describe('AuthService', () => {
   let module: TestingModule;
 
@@ -136,7 +137,7 @@ describe('AuthService', () => {
     describe('and a valid dto is provided', () => {
       let userDataMock: User;
       let signInDto: SignInDto;
-      let tokensMock: Auth.AccessRefreshTokens;
+      let tokensMock: AccessRefreshTokens;
 
       beforeEach(async () => {
         userDataMock = createUsers(1)[0];
@@ -203,7 +204,7 @@ describe('AuthService', () => {
 
   describe('when calling the refreshToken method', () => {
     describe('and a valid refresh token provided', () => {
-      let tokensMock: Auth.AccessRefreshTokens;
+      let tokensMock: AccessRefreshTokens;
 
       beforeEach(async () => {
         tokensMock = {

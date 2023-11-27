@@ -1,7 +1,8 @@
+import { LogLevel } from '@nestjs/common';
 import { registerAs } from '@nestjs/config';
 import * as path from 'path';
 
-function parseLogLevel(level: string | undefined): string[] {
+function parseLogLevel(level: string | undefined): LogLevel[] {
   if (!level) {
     return ['log', 'error', 'warn', 'debug', 'verbose'];
   }
@@ -10,11 +11,11 @@ function parseLogLevel(level: string | undefined): string[] {
     return [];
   }
 
-  return level.split(',');
+  return level.split(',') as LogLevel[];
 }
 
 export default registerAs('app', () => ({
-  port: process.env.APP_PORT || 3000,
+  port: parseInt(process.env.APP_PORT) || 3000,
   baseUrl: process.env.BASE_URL || 'http://localhost:3000',
   loggerLevel: parseLogLevel(
     process.env.APP_LOGGER_LEVEL || 'log,error,warn,debug,verbose',

@@ -11,9 +11,10 @@ import {
   NOT_FOUND,
   USER_CONFLICT,
 } from '@constants/errors.constants';
-import { User } from '@prisma/client';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
 import { TokenService } from '@modules/auth/token.service';
+import { AccessRefreshTokens } from './types/auth.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -28,8 +29,8 @@ export class AuthService {
    * @returns Promise<User> - Created user
    * @throws ConflictException - User with this email or phone already exists
    */
-  async singUp(signUpDto: SignUpDto): Promise<User> {
-    const testUser: User = await this.userRepository.findOne({
+  async singUp(signUpDto: SignUpDto): Promise<UserEntity> {
+    const testUser: UserEntity = await this.userRepository.findOne({
       where: { email: signUpDto.email },
     });
 
@@ -43,13 +44,13 @@ export class AuthService {
 
   /**
    * @desc Sign in a user
-   * @returns Auth.AccessRefreshTokens - Access and refresh tokens
+   * @returns AccessRefreshTokens - Access and refresh tokens
    * @throws NotFoundException - User not found
    * @throws UnauthorizedException - Invalid credentials
    * @param signInDto - User credentials
    */
-  async signIn(signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
-    const testUser: User = await this.userRepository.findOne({
+  async signIn(signInDto: SignInDto): Promise<AccessRefreshTokens> {
+    const testUser: UserEntity = await this.userRepository.findOne({
       where: {
         email: signInDto.email,
       },
@@ -57,7 +58,6 @@ export class AuthService {
         id: true,
         email: true,
         password: true,
-        roles: true,
       },
     });
 
@@ -83,9 +83,7 @@ export class AuthService {
     });
   }
 
-  refreshTokens(
-    refreshToken: string,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  refreshTokens(refreshToken: string): Promise<AccessRefreshTokens | void> {
     return this.tokenService.refreshTokens(refreshToken);
   }
 

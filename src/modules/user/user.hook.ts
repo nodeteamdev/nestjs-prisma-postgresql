@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { UserService } from '@modules/user/user.service';
 import { UserBeforeFilterHook } from '@modules/casl';
-import { User } from '@prisma/client';
+import UserEntity from './entities/user.entity';
 
 @Injectable()
-export class UserHook implements UserBeforeFilterHook<User> {
+export class UserHook implements UserBeforeFilterHook<UserEntity> {
   constructor(readonly userService: UserService) {}
 
   async run(request) {

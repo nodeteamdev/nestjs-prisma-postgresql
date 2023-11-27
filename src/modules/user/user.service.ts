@@ -2,24 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { UserRepository } from '@modules/user/user.repository';
 import { Prisma, User } from '@prisma/client';
 import { PaginatorTypes } from '@nodeteam/nestjs-prisma-pagination';
+import UserEntity from './entities/user.entity';
 
 @Injectable()
 export class UserService {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<UserEntity> {
     return this.userRepository.findById(id);
   }
 
   /**
    * @desc Find a user by id
    * @param id
-   * @returns Promise<User>
+   * @returns Promise<UserEntity>
    */
-  findOne(id: string): Promise<User> {
-    return this.userRepository.findOne({
-      where: { id },
-    });
+  findOne(id: string): Promise<UserEntity> {
+    return this.userRepository.findById(id);
   }
 
   /**

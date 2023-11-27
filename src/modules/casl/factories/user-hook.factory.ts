@@ -38,7 +38,9 @@ export async function userHookFactory(
   if (Array.isArray(hookOrTuple)) {
     const [ServiceClass, runFunction] = hookOrTuple;
     const service = moduleRef.get(ServiceClass, { strict: false });
+
     return new TupleUserHook<typeof ServiceClass>(service, runFunction);
   }
+
   return moduleRef.create<UserBeforeFilterHook>(hookOrTuple);
 }

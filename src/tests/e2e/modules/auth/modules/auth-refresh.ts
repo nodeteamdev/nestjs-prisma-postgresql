@@ -1,11 +1,12 @@
 import DefaultContext from '@tests/e2e/context/default-context';
-import { User } from '@prisma/client';
 import { AUTH_TOKEN_REFRESH } from '@tests/e2e/common/routes';
 import { faker } from '@faker-js/faker';
+import { AccessRefreshTokens } from '@modules/auth/types/auth.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 export default (ctx: DefaultContext) => {
-  let user: User;
-  let tokens: Auth.AccessRefreshTokens;
+  let user: UserEntity;
+  let tokens: AccessRefreshTokens;
 
   beforeAll(async () => {
     user = await ctx.service.createUser();

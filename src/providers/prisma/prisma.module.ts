@@ -62,6 +62,7 @@ export class PrismaModule {
         },
       ];
     }
+
     return [
       {
         provide: PRISMA_SERVICE_OPTIONS,

@@ -3,7 +3,6 @@ import { AuthService } from './auth.service';
 import { SignUpDto } from './dto/sign-up.dto';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import ApiBaseResponses from '@decorators/api-base-response.decorator';
-import { User } from '@prisma/client';
 import Serialize from '@decorators/serialize.decorator';
 import UserBaseEntity from '@modules/user/entities/user-base.entity';
 import { SignInDto } from '@modules/auth/dto/sign-in.dto';
@@ -17,6 +16,9 @@ import {
   UserProxy,
 } from '@modules/casl';
 import { TokensEntity } from '@modules/auth/entities/tokens.entity';
+import { AccessRefreshTokens } from './types/auth.types';
+import { UserWithRoles } from '@modules/user/types/user.types';
+import UserEntity from '@modules/user/entities/user.entity';
 
 @ApiTags('Auth')
 @ApiBaseResponses()
@@ -28,14 +30,14 @@ export class AuthController {
   @Serialize(UserBaseEntity)
   @SkipAuth()
   @Post('sign-up')
-  create(@Body() signUpDto: SignUpDto): Promise<User> {
+  create(@Body() signUpDto: SignUpDto): Promise<UserEntity> {
     return this.authService.singUp(signUpDto);
   }
 
   @ApiBody({ type: SignInDto })
   @SkipAuth()
   @Post('sign-in')
-  signIn(@Body() signInDto: SignInDto): Promise<Auth.AccessRefreshTokens> {
+  signIn(@Body() signInDto: SignInDto): Promise<AccessRefreshTokens> {
     return this.authService.signIn(signInDto);
   }
 
@@ -44,7 +46,7 @@ export class AuthController {
   @Post('token/refresh')
   refreshToken(
     @Body() refreshTokenDto: RefreshTokenDto,
-  ): Promise<Auth.AccessRefreshTokens | void> {
+  ): Promise<AccessRefreshTokens | void> {
     return this.authService.refreshTokens(refreshTokenDto.refreshToken);
   }
 
@@ -53,8 +55,9 @@ export class AuthController {
   @UseGuards(AccessGuard)
   @HttpCode(204)
   @UseAbility(Actions.delete, TokensEntity)
-  async logout(@CaslUser() userProxy?: UserProxy<User>) {
+  async logout(@CaslUser() userProxy?: UserProxy<UserWithRoles>) {
     const { accessToken } = await userProxy.getMeta();
+
     return this.authService.logout(accessToken);
   }
 }

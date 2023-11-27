@@ -51,6 +51,7 @@ export class AbilityFactory<
     if (abilityClass === PureAbility) {
       return ability.build({ conditionsMatcher: nullConditionsMatcher });
     }
+
     return ability.build();
   }
 }
