@@ -24,10 +24,10 @@ export class UserRepository {
   }
 
   async findById(id: string): Promise<UserEntity | null> {
-    const user = (await this.prisma.user.findFirst({
+    const user = await this.prisma.user.findUnique({
       where: { id },
-      select: { roles: { select: { role: true } } },
-    })) as UserWithRoles;
+      include: { roles: { select: { role: true } } },
+    });
 
     if (!user) {
       return null;
